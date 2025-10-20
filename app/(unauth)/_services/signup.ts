@@ -36,8 +36,6 @@ export async function signupAction(state: ActionState, formData: FormData) {
         password: hashedPassword,
       },
     });
-
-    return redirect("/login");
   } catch (error) {
     console.error("Signup error:", error);
     return {
@@ -45,4 +43,5 @@ export async function signupAction(state: ActionState, formData: FormData) {
       message: "An internal error occurred. Try again later.",
     };
   }
+  return redirect("/login");
 }
