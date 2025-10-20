@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useActionState, useEffect, startTransition } from "react";
 import { loginAction } from "../_services/login.server";
 import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -30,6 +31,8 @@ type ActionState = {
 };
 
 const LoginPage = () => {
+  const searchParams = useSearchParams();
+  const emailRedirect = searchParams.get("email");
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     loginAction,
     {
@@ -44,6 +47,9 @@ const LoginPage = () => {
   } = useForm<FormValues>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
+    defaultValues: {
+      email: emailRedirect || "",
+    },
   });
 
   const onSubmit = async (data: FormValues) => {

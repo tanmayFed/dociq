@@ -27,6 +27,17 @@ export async function signupAction(state: ActionState, formData: FormData) {
   const { email, password, displayName } = parsedData.data;
 
   try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        message: "An account with this email already exists.",
+      };
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({
@@ -43,5 +54,5 @@ export async function signupAction(state: ActionState, formData: FormData) {
       message: "An internal error occurred. Try again later.",
     };
   }
-  return redirect("/login");
+  return redirect("/login?email=" + encodeURIComponent(email));
 }
