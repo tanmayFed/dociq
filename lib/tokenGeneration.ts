@@ -9,7 +9,7 @@ const ACCESS_TOKEN_EXPIRY = "15m";
 const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000;
 
 export async function generateToken(payload: object) {
-  const res = await jwt.sign(payload, JWT_SECRET, {
+  const res = await jwt.sign(payload, JWT_SECRET!, {
     expiresIn: ACCESS_TOKEN_EXPIRY,
     algorithm: "HS256",
   });
