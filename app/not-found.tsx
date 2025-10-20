@@ -1,4 +1,4 @@
-import { Center, IconButton, Link, Stack, Text } from "@chakra-ui/react";
+import { Center, Link, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 
 export default function NotFound() {
