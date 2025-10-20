@@ -39,6 +39,7 @@ export async function signupAction(state: ActionState, formData: FormData) {
 
     return redirect("/login");
   } catch (error) {
+    console.error("Signup error:", error);
     return {
       success: false,
       message: "An internal error occurred. Try again later.",
