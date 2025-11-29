@@ -1,9 +1,10 @@
-import { GoogleGenAI, TaskType } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({});
 
 const EMBEDDING_MODEL = "gemini-embedding-001";
 const EMBEDDING_DIMENSION = 3072;
+type EmbeddingTaskType = "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY";
 
 /**
  * Generates a vector embedding for a given text, optimized for its role in RAG.
@@ -13,7 +14,7 @@ const EMBEDDING_DIMENSION = 3072;
  */
 export async function getEmbeddings(
   text: string,
-  type: TaskType
+  type: EmbeddingTaskType
 ): Promise<number[]> {
   const response = await ai.models.embedContent({
     model: EMBEDDING_MODEL,
