@@ -16,6 +16,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   RefreshToken RefreshToken[]
+  Asset        Asset[]
 }
 
 model RefreshToken {
@@ -28,4 +29,61 @@ model RefreshToken {
   revokedAt DateTime?
 
   @@index([userId])
+}
+
+model Asset {
+  id             String           @id @default(cuid())
+  fileName       String           @map("file_name")
+  mimeType       String           @map("mime_type")
+  filePath       String           @unique @map("file_path")
+  publicUrl      String?          @map("public_url")
+  uploadedAt     DateTime         @default(now()) @map("uploaded_at")
+  userId         String           @map("user_id")
+  textContent    String?          @map("text_content") // ✅ newly added
+  embedding      String?          @map("embedding") // ✅ optional for AI features
+  User           User             @relation(fields: [userId], references: [id])
+  AssetText      AssetText[]
+  AssetEmbedding AssetEmbedding[]
+  DocumentChunk  DocumentChunk[]
+
+  @@map("assets")
+}
+
+model AssetText {
+  id        String   @id @default(cuid())
+  assetId   String
+  content   String
+  createdAt DateTime @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@map("asset_texts")
+}
+
+model AssetEmbedding {
+  id        String   @id @default(cuid())
+  assetId   String
+  chunkText String
+  embedding Json
+  createdAt DateTime @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@map("asset_embeddings")
+}
+
+// New model to store the chunks and their vectors
+model DocumentChunk {
+  id         String                 @id @default(cuid())
+  assetId    String                 @map("asset_id")
+  content    String                 @db.Text
+  embedding  Unsupported("vector(3072)")? 
+  chunkIndex Int                    @map("chunk_index")
+
+  Asset Asset @relation(fields: [assetId], references: [id])
+
+  // You will need a custom index for fast vector search (e.g., HNSW or IVFFlat)
+  // This cannot be defined here and must be added via raw SQL migration (see step 2C)
+
+  @@map("document_chunks")
 }

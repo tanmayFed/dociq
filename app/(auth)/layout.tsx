@@ -1,5 +1,6 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Button } from "@chakra-ui/react";
 import Link from "next/link";
+import { logoutAction } from "./_services/actions";
 
 export default function AuthLayout({
   children,
@@ -32,6 +33,12 @@ export default function AuthLayout({
             </Heading>
           </Flex>
         </Link>
+
+        <Flex ms="auto">
+          <form action={logoutAction}>
+            <Button type="submit">Log Out</Button>
+          </form>
+        </Flex>
       </Flex>
 
       <Box as="main">{children}</Box>

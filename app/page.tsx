@@ -1,4 +1,3 @@
-import prisma from "@/lib/prisma";
 import { Link, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 
