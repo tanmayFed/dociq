@@ -8,6 +8,12 @@ import { NextResponse } from "next/server";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+type DocumentChunk = {
+  id: string;
+  content: string;
+  distance: number;
+};
+
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
   // 1. Extract the query (same logic)
@@ -15,13 +21,13 @@ export async function POST(req: Request) {
   const textPart = lastUserMessage.parts.find(
     (part: any) => part.type === "text"
   );
-  const query = textPart ? textPart.text : null;
+  const query = (textPart as any)?.text || null;
 
   const queryEmbedding = await getEmbeddings(query, "RETRIEVAL_QUERY");
   const K = 5;
   const vectorString = `[${queryEmbedding.join(",")}]`;
 
-  const retrievalResult = await prisma.$queryRaw(Prisma.sql`
+  const retrievalResult = await prisma.$queryRaw<DocumentChunk[]>(Prisma.sql`
         SELECT id, content, ${Prisma.raw(
           "embedding"
         )} <-> ${vectorString}::vector AS distance
